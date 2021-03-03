@@ -3,7 +3,8 @@ from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from mongoengine.connection import connect, disconnect
 from starlette.exceptions import HTTPException as StarletteHTTPException
-
+from fortauto.view.serviceList import serviceList_router
+from fortauto.view.service import service_router
 from fortauto.fortautoMixin.generalMixin import Fortauto
 from fortauto.settings import DEBUG, API_URL
 from fortauto.view.userView import account_router
@@ -11,6 +12,8 @@ from fortauto.view.userView import account_router
 app = FastAPI(debug=DEBUG)
 app.mount("/static", StaticFiles(directory="./fortauto/static"), name="static")
 app.include_router(account_router, prefix=Fortauto.route_prefix("user"), tags=["Account"])
+app.include_router(serviceList_router ,prefix=Fortauto.route_prefix("servicelist"), tags=["ServiceList"])
+app.include_router(service_router ,prefix=Fortauto.route_prefix("service"), tags=["Service"])
 
 
 @app.on_event("startup")

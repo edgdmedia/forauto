@@ -15,7 +15,7 @@ account_router = APIRouter()
 
 
 @account_router.post("/register")
-async def index(user: UserInput, background: BackgroundTasks):
+async def register(user: UserInput, background: BackgroundTasks):
     if User.find_user_with_email(email=user.email):
         return Fortauto.response({"message": "Account already exist"},
                                  status_code=status.HTTP_400_BAD_REQUEST)
