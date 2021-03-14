@@ -32,3 +32,8 @@ class PasswordResetInput(BaseModel):
 class UserLoginInput(BaseModel):
     email: EmailStr
     password: bytes
+
+class CarDetail(BaseModel):
+    maker:str
+    model:str
+    vin_number:str

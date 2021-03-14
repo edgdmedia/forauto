@@ -16,13 +16,13 @@ async def create_service(newItems:ServiceListInput, user:dict = Depends(UserMixi
               addToList.save(clean=True)
               return Fortauto.response({"service": addToList.to_json()}, status_code=status.HTTP_201_CREATED)
       except errors.ValidationError:
-          return Fortauto.response({"message": "error validating new service type"},
+          return Fortauto.response({"message": "error validating new category type"},
                                    status_code=status.HTTP_400_BAD_REQUEST)
       except errors.NotUniqueError:
           return Fortauto.response({"message": "Service already exists"},
                                    status_code=status.HTTP_400_BAD_REQUEST)
-      except Exception:
-          return Fortauto.response({"message": "error adding new service, please try again"},
+      except Exception.__base__:
+          return Fortauto.response({"message": "error adding new category, please try again"},
                                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
   return Fortauto.response({"message": "Error validating admin credentials"},
@@ -34,13 +34,14 @@ async  def update_service(service:ServiceUpdateInput, user:dict = Depends(UserMi
       try:
           service_to_update = ServiceList.get_single_serviceListById(service.id)
           if service_to_update:
-              service_to_update.update(name=service.name)
-              service = service_to_update.save(clean=True)
-              return Fortauto.response({"service": service.to_json(),
+              service_to_update.update(name=service.name, price=service.price)
+              service_to_update.save(clean=True)
+              service_obj = ServiceList.get_single_serviceListById(service.id)
+              return Fortauto.response({"service": service_obj.to_json(),
                                         "message": "service updated successfully"}, status_code=status.HTTP_200_OK)
-          return Fortauto.response({"message": "service type not found"}, status_code=status.HTTP_400_BAD_REQUEST)
+          return Fortauto.response({"message": "service not found"}, status_code=status.HTTP_400_BAD_REQUEST)
       except errors.ValidationError:
-          return Fortauto.response({"message": "service type does  not exist"}, status_code=status.HTTP_400_BAD_REQUEST)
+          return Fortauto.response({"message": "service does  not exist"}, status_code=status.HTTP_400_BAD_REQUEST)
   return Fortauto.response({"message": "Error validating admin credentials"},
                            status_code=status.HTTP_401_UNAUTHORIZED)
 
@@ -52,39 +53,39 @@ async def get_service_type_list():
         all_list = [service.to_json() for service in all_service]
         return Fortauto.response({"serviceList":all_list}, status_code=status.HTTP_200_OK)
     except errors.ValidationError:
-        return Fortauto.response({"message": "service type does not exist"},
+        return Fortauto.response({"message": "service does not exist"},
                                  status_code=status.HTTP_400_BAD_REQUEST)
-    except Exception:
-        return Fortauto.response({"message": "Error getting service type"},
+    except Exception.__base__:
+        return Fortauto.response({"message": "Error getting category type"},
                                  status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @serviceList_router.get("/{serviceId}")
 async def get_single_service(serviceId:str):
     try:
         service = ServiceList.get_single_serviceListById(serviceId)
-        if serviceId:
+        if service:
             return Fortauto.response({"service": service.to_json()}, status_code=status.HTTP_200_OK)
-        return Fortauto.response({"message": "service type not found"}, status_code=status.HTTP_400_BAD_REQUEST)
+        return Fortauto.response({"message": "service not found"}, status_code=status.HTTP_400_BAD_REQUEST)
     except errors.ValidationError:
-        return Fortauto.response({"message": "service type does  not exist"},
+        return Fortauto.response({"message": "service does  not exist"},
                              status_code=status.HTTP_400_BAD_REQUEST)
 
 
 @serviceList_router.delete("/{serviceId}")
 async def delete_service(serviceId:str, user:dict = Depends(UserMixin.authenticate_user)):
-    if user["admin"]:
+    if user["super_admin"]:
         try:
             deleted_to_service = ServiceList.get_single_serviceListById(serviceId)
             if deleted_to_service:
                 deleted_to_service.delete()
-                return Fortauto.response({"message": "service type deleted successfully"},
+                return Fortauto.response({"message": "service deleted successfully"},
                                          status_code=status.HTTP_200_OK)
-            return Fortauto.response({"message": "service type not found"}, status_code=status.HTTP_400_BAD_REQUEST)
+            return Fortauto.response({"message": "service is not found"}, status_code=status.HTTP_400_BAD_REQUEST)
         except errors.ValidationError:
-            return Fortauto.response({"message": "service type does not exist"},
+            return Fortauto.response({"message": "service does not exist"},
                                      status_code=status.HTTP_400_BAD_REQUEST)
-        except Exception:
-            return Fortauto.response({"message":"Error deleting service type"},
+        except Exception.__base__:
+            return Fortauto.response({"message":"Error deleting service"},
                                      status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
     return Fortauto.response({"message":"Error validating admin"}, status_code=status.HTTP_401_UNAUTHORIZED)
 

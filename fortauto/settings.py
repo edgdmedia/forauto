@@ -3,7 +3,6 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv(dotenv_path="../.env")
-
 WEBSITE_NAME = os.getenv("WEBSITE_NAME")
 DEBUG = os.getenv("DEBUG")
 EMAIL = os.getenv("EMAIL")
