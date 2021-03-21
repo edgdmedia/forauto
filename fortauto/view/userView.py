@@ -58,7 +58,7 @@ async def register(user: UserInput, background: BackgroundTasks):
     return Fortauto.response({"message": "Password is does not match"}, status_code=status.HTTP_400_BAD_REQUEST)
 
 @account_router.post("/login")
-def loginUserAccount(userIn: UserLoginInput, response: Response):
+def loginUserAccount(userIn: UserLoginInput, response: Response)->Response:
     user = User.find_user_with_email(email=userIn.email)
     if user:
         if user.active:
@@ -71,14 +71,14 @@ def loginUserAccount(userIn: UserLoginInput, response: Response):
                                         httponly=True,
                                         max_age=172800,
                                         expires=172800,
-                                        domain=WEBSITE_NAME,
-                                        secure=True)
+                                       )
+
                     SuccessResponseData = {
                         "user": user.to_json(indent=4),
                         "message": "logged in successfully",
                         "access_token": encode_jwt_access,
                         "access_token_type": "Bearer",
-                        "expires": "2 days"
+                        "expires": "2 days",
                     }
                     return Fortauto.response(SuccessResponseData,
                                              status_code=status.HTTP_200_OK)
