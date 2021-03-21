@@ -57,4 +57,4 @@ app.add_middleware(
 @Fortauto.run_once
 @app.get(f"/", include_in_schema=False)
 async def index():
-    return RedirectResponse("/docs", status_code=status.HTTP_302_FOUND)
+    return RedirectResponse("/redoc", status_code=status.HTTP_302_FOUND)
