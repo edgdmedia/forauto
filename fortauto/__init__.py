@@ -12,7 +12,7 @@ from fortauto.view.userView import account_router, car_router
 from fortauto.view.serviceCategory import serviceCategory_router
 from fortauto.view.paymentView import payment_router, user_deposit
 app = FastAPI(debug=DEBUG, title="Fortauto", version=1.00)
-app.mount("/static", StaticFiles(directory="./fortauto/static"), name="static")
+# app.mount("/static", StaticFiles(directory="./fortauto/static"), name="static")
 app.include_router(account_router, prefix=Fortauto.route_prefix("user"), tags=["Account"])
 app.include_router(serviceList_router ,prefix=Fortauto.route_prefix("servicelist"), tags=["ServiceList"])
 app.include_router(service_router ,prefix=Fortauto.route_prefix("service"), tags=["Service"])
