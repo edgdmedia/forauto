@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fortauto.view.serviceList import serviceList_router
 from fortauto.view.service import service_router
 from fortauto.fortautoMixin.generalMixin import Fortauto
-from fortauto.settings import DEBUG, API_URL
+from fortauto.settings import DEBUG, API_URL, DATABASE_URL
 from fortauto.view.userView import account_router, car_router
 from fortauto.view.serviceCategory import serviceCategory_router
 from fortauto.view.paymentView import payment_router, user_deposit
@@ -25,7 +25,7 @@ app.include_router(car_router ,prefix=Fortauto.route_prefix("user/cardetails"), 
 
 @app.on_event("startup")
 async def initialize_db():
-    if connect(db="fortauto"):
+    if connect(host=DATABASE_URL):
         print("database connected successfully")
 
 
